@@ -221,6 +221,12 @@ Quand vous avez fini d'utiliser l'application :
 
 Si le problème persiste, supprimez aussi le fichier `backend/prisma/dev.db` avant de relancer.
 
+### Erreur : "Environment variable not found: DATABASE_URL"
+❌ Le fichier de configuration .env n'existe pas (déjà corrigé - création automatique)
+✅ Solution :
+Le script d'installation créé automatiquement ce fichier depuis la version corrigée.
+Si vous voyez cette erreur, assurez-vous d'avoir la dernière version du code avec `git pull`.
+
 ### L'application ne s'ouvre pas dans le navigateur
 ❌ Le frontend n'est pas démarré
 ✅ Vérifiez que les 2 terminaux sont ouverts et qu'aucun message d'erreur n'apparaît

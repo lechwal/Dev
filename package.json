@@ -4,10 +4,11 @@
   "description": "Application de gestion d'équipes avec droits d'accès",
   "scripts": {
     "install-all": "cd backend && npm install && cd ../frontend && npm install",
+    "setup-env": "node setup-env.js",
     "setup-backend": "cd backend && npx prisma generate && npx prisma migrate dev --name init && node prisma/seed.js",
     "dev-backend": "cd backend && npm start",
     "dev-frontend": "cd frontend && npm start",
-    "setup": "npm run install-all && npm run setup-backend"
+    "setup": "npm run setup-env && npm run install-all && npm run setup-backend"
   },
   "keywords": ["team", "management", "react", "express", "prisma"],
   "author": "",
