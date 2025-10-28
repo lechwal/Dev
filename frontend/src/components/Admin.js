@@ -190,9 +190,9 @@ function Admin() {
                 });
                 setShowUserForm(!showUserForm);
               }}
-              className="btn-primary"
+              className={showUserForm ? "btn-compact btn-secondary" : "btn-compact"}
             >
-              {showUserForm ? 'Annuler' : 'Nouvel utilisateur'}
+              {showUserForm ? 'Annuler' : '+ Nouvel utilisateur'}
             </button>
           </div>
 
@@ -346,9 +346,9 @@ function Admin() {
                 setTeamFormData({ name: '', description: '' });
                 setShowTeamForm(!showTeamForm);
               }}
-              className="btn-primary"
+              className={showTeamForm ? "btn-compact btn-secondary" : "btn-compact"}
             >
-              {showTeamForm ? 'Annuler' : 'Nouvelle équipe'}
+              {showTeamForm ? 'Annuler' : '+ Nouvelle équipe'}
             </button>
           </div>
 

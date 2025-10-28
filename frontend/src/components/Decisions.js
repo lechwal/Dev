@@ -77,8 +77,8 @@ function Decisions() {
     <div className="decisions-page">
       <div className="page-header">
         <h1>Décisions</h1>
-        <button onClick={() => setShowForm(!showForm)} className="btn-primary">
-          {showForm ? 'Annuler' : 'Nouvelle décision'}
+        <button onClick={() => setShowForm(!showForm)} className={showForm ? "btn-compact btn-secondary" : "btn-compact"}>
+          {showForm ? 'Annuler' : '+ Nouvelle décision'}
         </button>
       </div>
 

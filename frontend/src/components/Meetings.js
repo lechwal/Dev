@@ -71,8 +71,8 @@ function Meetings() {
     <div className="meetings-page">
       <div className="page-header">
         <h1>Réunions</h1>
-        <button onClick={() => setShowForm(!showForm)} className="btn-primary">
-          {showForm ? 'Annuler' : 'Nouvelle réunion'}
+        <button onClick={() => setShowForm(!showForm)} className={showForm ? "btn-compact btn-secondary" : "btn-compact"}>
+          {showForm ? 'Annuler' : '+ Nouvelle réunion'}
         </button>
       </div>
 

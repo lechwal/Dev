@@ -83,8 +83,8 @@ function Tasks() {
     <div className="tasks-page">
       <div className="page-header">
         <h1>Tâches</h1>
-        <button onClick={() => setShowForm(!showForm)} className="btn-primary">
-          {showForm ? 'Annuler' : 'Nouvelle tâche'}
+        <button onClick={() => setShowForm(!showForm)} className={showForm ? "btn-compact btn-secondary" : "btn-compact"}>
+          {showForm ? 'Annuler' : '+ Nouvelle tâche'}
         </button>
       </div>
 
