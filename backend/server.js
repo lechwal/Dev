@@ -1,5 +1,6 @@
 const express = require('express');
 const cors = require('cors');
+const path = require('path');
 require('dotenv').config();
 
 const authRoutes = require('./routes/auth');
@@ -24,26 +25,37 @@ app.use('/api/meetings', meetingRoutes);
 app.use('/api/tasks', taskRoutes);
 app.use('/api/decisions', decisionRoutes);
 
-// Route de base
-app.get('/', (req, res) => {
-  res.json({
-    message: 'API de gestion d\'équipes',
-    version: '1.0.0',
-    endpoints: {
-      auth: '/api/auth',
-      users: '/api/users',
-      teams: '/api/teams',
-      meetings: '/api/meetings',
-      tasks: '/api/tasks',
-      decisions: '/api/decisions'
-    }
-  });
-});
+// En production, servir les fichiers statiques du frontend
+if (process.env.NODE_ENV === 'production') {
+  // Servir les fichiers statiques du build React
+  app.use(express.static(path.join(__dirname, '../frontend/build')));
 
-// Gestion des erreurs 404
-app.use((req, res) => {
-  res.status(404).json({ error: 'Route non trouvée' });
-});
+  // Toutes les routes non-API renvoient index.html (pour React Router)
+  app.get('*', (req, res) => {
+    res.sendFile(path.join(__dirname, '../frontend/build', 'index.html'));
+  });
+} else {
+  // En développement, route de base pour l'API
+  app.get('/', (req, res) => {
+    res.json({
+      message: 'API de gestion d\'équipes',
+      version: '1.0.0',
+      endpoints: {
+        auth: '/api/auth',
+        users: '/api/users',
+        teams: '/api/teams',
+        meetings: '/api/meetings',
+        tasks: '/api/tasks',
+        decisions: '/api/decisions'
+      }
+    });
+  });
+
+  // Gestion des erreurs 404 en développement
+  app.use((req, res) => {
+    res.status(404).json({ error: 'Route non trouvée' });
+  });
+}
 
 // Démarrage du serveur
 app.listen(PORT, () => {

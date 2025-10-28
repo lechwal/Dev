@@ -8,7 +8,10 @@
     "setup-backend": "cd backend && npx prisma generate && npx prisma migrate dev --name init && node prisma/seed.js",
     "dev-backend": "cd backend && npm start",
     "dev-frontend": "cd frontend && npm start",
-    "setup": "npm run setup-env && npm run install-all && npm run setup-backend"
+    "setup": "npm run setup-env && npm run install-all && npm run setup-backend",
+    "build": "cd backend && npm install && npx prisma generate && cd ../frontend && npm install && npm run build",
+    "start": "cd backend && node server.js",
+    "migrate": "cd backend && npx prisma migrate deploy"
   },
   "keywords": ["team", "management", "react", "express", "prisma"],
   "author": "",
