@@ -1,5 +1,6 @@
 import React, { createContext, useState, useContext, useEffect } from 'react';
 import axios from 'axios';
+import api from '../services/api';
 
 const AuthContext = createContext();
 
@@ -18,7 +19,6 @@ export const AuthProvider = ({ children }) => {
 
   useEffect(() => {
     if (token) {
-      axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
       loadUserProfile();
     } else {
       setLoading(false);
@@ -27,7 +27,7 @@ export const AuthProvider = ({ children }) => {
 
   const loadUserProfile = async () => {
     try {
-      const response = await axios.get('/api/auth/profile');
+      const response = await api.get('/auth/profile');
       setUser(response.data);
     } catch (error) {
       console.error('Erreur lors du chargement du profil:', error);
@@ -44,7 +44,6 @@ export const AuthProvider = ({ children }) => {
     localStorage.setItem('token', newToken);
     setToken(newToken);
     setUser(userData);
-    axios.defaults.headers.common['Authorization'] = `Bearer ${newToken}`;
 
     return userData;
   };
@@ -57,7 +56,6 @@ export const AuthProvider = ({ children }) => {
     localStorage.removeItem('token');
     setToken(null);
     setUser(null);
-    delete axios.defaults.headers.common['Authorization'];
   };
 
   const isDirection = () => {

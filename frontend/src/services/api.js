@@ -4,6 +4,20 @@ const api = axios.create({
   baseURL: '/api'
 });
 
+// Intercepteur pour ajouter le token d'authentification à chaque requête
+api.interceptors.request.use(
+  (config) => {
+    const token = localStorage.getItem('token');
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
+    }
+    return config;
+  },
+  (error) => {
+    return Promise.reject(error);
+  }
+);
+
 // Utilisateurs (admin seulement)
 export const userService = {
   getAll: () => api.get('/users'),
