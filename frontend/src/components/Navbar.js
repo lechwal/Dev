@@ -1,9 +1,11 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
+import { useTheme } from '../contexts/ThemeContext';
 
 function Navbar() {
   const { user, logout, isDirection } = useAuth();
+  const { theme, toggleTheme, isDark } = useTheme();
 
   return (
     <nav className="navbar">
@@ -16,9 +18,13 @@ function Navbar() {
         <Link to="/tasks">Tâches</Link>
         <Link to="/meetings">Réunions</Link>
         <Link to="/decisions">Décisions</Link>
+        {isDirection() && <Link to="/admin">Administration</Link>}
       </div>
 
       <div className="nav-user">
+        <button onClick={toggleTheme} className="btn-theme" title="Changer de thème">
+          {isDark ? '☀️' : '🌙'}
+        </button>
         <span className="user-name">
           {user?.firstName} {user?.lastName}
           {isDirection() && <span className="badge-direction">Direction</span>}

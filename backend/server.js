@@ -3,6 +3,7 @@ const cors = require('cors');
 require('dotenv').config();
 
 const authRoutes = require('./routes/auth');
+const userRoutes = require('./routes/users');
 const teamRoutes = require('./routes/teams');
 const meetingRoutes = require('./routes/meetings');
 const taskRoutes = require('./routes/tasks');
@@ -17,6 +18,7 @@ app.use(express.json());
 
 // Routes
 app.use('/api/auth', authRoutes);
+app.use('/api/users', userRoutes);
 app.use('/api/teams', teamRoutes);
 app.use('/api/meetings', meetingRoutes);
 app.use('/api/tasks', taskRoutes);
@@ -29,6 +31,7 @@ app.get('/', (req, res) => {
     version: '1.0.0',
     endpoints: {
       auth: '/api/auth',
+      users: '/api/users',
       teams: '/api/teams',
       meetings: '/api/meetings',
       tasks: '/api/tasks',
