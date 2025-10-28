@@ -212,6 +212,15 @@ Quand vous avez fini d'utiliser l'application :
 ❌ Les dépendances ne sont pas installées
 ✅ Retournez à l'étape 5 et relancez `npm run setup`
 
+### Erreur : "Error validating: You defined the enum... current connector does not support enums"
+❌ Problème de compatibilité avec SQLite (déjà corrigé dans la dernière version)
+✅ Solution :
+1. Assurez-vous d'avoir la dernière version du code (git pull)
+2. Supprimez le dossier `backend/node_modules` et le fichier `backend/package-lock.json`
+3. Relancez `npm run setup`
+
+Si le problème persiste, supprimez aussi le fichier `backend/prisma/dev.db` avant de relancer.
+
 ### L'application ne s'ouvre pas dans le navigateur
 ❌ Le frontend n'est pas démarré
 ✅ Vérifiez que les 2 terminaux sont ouverts et qu'aucun message d'erreur n'apparaît

@@ -9,24 +9,8 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-enum Role {
-  MEMBRE
-  DIRECTION
-}
-
-enum TaskStatus {
-  TODO
-  IN_PROGRESS
-  DONE
-  CANCELLED
-}
-
-enum TaskPriority {
-  LOW
-  MEDIUM
-  HIGH
-  URGENT
-}
+// Note: SQLite ne supporte pas les enums natifs
+// Les valeurs possibles sont gérées au niveau de l'application
 
 model User {
   id        Int      @id @default(autoincrement())
@@ -34,7 +18,7 @@ model User {
   password  String
   firstName String
   lastName  String
-  role      Role     @default(MEMBRE)
+  role      String   @default("MEMBRE")  // MEMBRE ou DIRECTION
   teamId    Int?
   team      Team?    @relation(fields: [teamId], references: [id])
   assignedTasks Task[]
@@ -73,18 +57,18 @@ model Meeting {
 }
 
 model Task {
-  id          Int          @id @default(autoincrement())
+  id          Int       @id @default(autoincrement())
   title       String
   description String?
-  status      TaskStatus   @default(TODO)
-  priority    TaskPriority @default(MEDIUM)
+  status      String    @default("TODO")  // TODO, IN_PROGRESS, DONE, CANCELLED
+  priority    String    @default("MEDIUM")  // LOW, MEDIUM, HIGH, URGENT
   dueDate     DateTime?
   teamId      Int
-  team        Team         @relation(fields: [teamId], references: [id], onDelete: Cascade)
+  team        Team      @relation(fields: [teamId], references: [id], onDelete: Cascade)
   assignedToId Int?
-  assignedTo  User?        @relation(fields: [assignedToId], references: [id])
-  createdAt   DateTime     @default(now())
-  updatedAt   DateTime     @updatedAt
+  assignedTo  User?     @relation(fields: [assignedToId], references: [id])
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
 
   @@map("tasks")
 }
