@@ -1,0 +1,105 @@
+// Schéma Prisma pour la gestion d'équipes
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  MEMBRE
+  DIRECTION
+}
+
+enum TaskStatus {
+  TODO
+  IN_PROGRESS
+  DONE
+  CANCELLED
+}
+
+enum TaskPriority {
+  LOW
+  MEDIUM
+  HIGH
+  URGENT
+}
+
+model User {
+  id        Int      @id @default(autoincrement())
+  email     String   @unique
+  password  String
+  firstName String
+  lastName  String
+  role      Role     @default(MEMBRE)
+  teamId    Int?
+  team      Team?    @relation(fields: [teamId], references: [id])
+  assignedTasks Task[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("users")
+}
+
+model Team {
+  id          Int        @id @default(autoincrement())
+  name        String     @unique
+  description String?
+  members     User[]
+  meetings    Meeting[]
+  tasks       Task[]
+  decisions   Decision[]
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+
+  @@map("teams")
+}
+
+model Meeting {
+  id          Int        @id @default(autoincrement())
+  title       String
+  description String?
+  date        DateTime
+  teamId      Int
+  team        Team       @relation(fields: [teamId], references: [id], onDelete: Cascade)
+  decisions   Decision[]
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+
+  @@map("meetings")
+}
+
+model Task {
+  id          Int          @id @default(autoincrement())
+  title       String
+  description String?
+  status      TaskStatus   @default(TODO)
+  priority    TaskPriority @default(MEDIUM)
+  dueDate     DateTime?
+  teamId      Int
+  team        Team         @relation(fields: [teamId], references: [id], onDelete: Cascade)
+  assignedToId Int?
+  assignedTo  User?        @relation(fields: [assignedToId], references: [id])
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+
+  @@map("tasks")
+}
+
+model Decision {
+  id          Int      @id @default(autoincrement())
+  title       String
+  description String?
+  date        DateTime @default(now())
+  teamId      Int
+  team        Team     @relation(fields: [teamId], references: [id], onDelete: Cascade)
+  meetingId   Int?
+  meeting     Meeting? @relation(fields: [meetingId], references: [id])
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@map("decisions")
+}

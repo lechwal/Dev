@@ -1,0 +1,15 @@
+{
+  "name": "team-management-app",
+  "version": "1.0.0",
+  "description": "Application de gestion d'équipes avec droits d'accès",
+  "scripts": {
+    "install-all": "cd backend && npm install && cd ../frontend && npm install",
+    "setup-backend": "cd backend && npx prisma generate && npx prisma migrate dev --name init && node prisma/seed.js",
+    "dev-backend": "cd backend && npm start",
+    "dev-frontend": "cd frontend && npm start",
+    "setup": "npm run install-all && npm run setup-backend"
+  },
+  "keywords": ["team", "management", "react", "express", "prisma"],
+  "author": "",
+  "license": "MIT"
+}
