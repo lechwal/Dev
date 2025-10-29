@@ -38,12 +38,13 @@ function Admin() {
   const loadData = async () => {
     try {
       setLoading(true);
+      // Toujours charger les équipes car elles sont nécessaires pour le formulaire utilisateur
+      const teamsRes = await teamService.getAll();
+      setTeams(teamsRes.data);
+
       if (activeTab === 'users') {
         const usersRes = await userService.getAll();
         setUsers(usersRes.data);
-      } else {
-        const teamsRes = await teamService.getAll();
-        setTeams(teamsRes.data);
       }
     } catch (error) {
       console.error('Erreur:', error);

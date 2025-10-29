@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
-import { taskService, userService, meetingService } from '../services/api';
+import { taskService, userService, meetingService, teamService } from '../services/api';
 
 function TaskDetail() {
   const { id } = useParams();
@@ -8,6 +8,7 @@ function TaskDetail() {
   const [task, setTask] = useState(null);
   const [users, setUsers] = useState([]);
   const [meetings, setMeetings] = useState([]);
+  const [teams, setTeams] = useState([]);
   const [loading, setLoading] = useState(true);
   const [editing, setEditing] = useState(false);
   const [formData, setFormData] = useState({
@@ -17,13 +18,15 @@ function TaskDetail() {
     priority: 'MEDIUM',
     dueDate: '',
     assignedToId: '',
-    meetingId: ''
+    meetingId: '',
+    teamId: ''
   });
 
   useEffect(() => {
     loadTask();
     loadUsers();
     loadMeetings();
+    loadTeams();
   }, [id]);
 
   const loadTask = async () => {
@@ -37,7 +40,8 @@ function TaskDetail() {
         priority: response.data.priority,
         dueDate: response.data.dueDate ? response.data.dueDate.split('T')[0] : '',
         assignedToId: response.data.assignedToId || '',
-        meetingId: response.data.meetingId || ''
+        meetingId: response.data.meetingId || '',
+        teamId: response.data.teamId || ''
       });
     } catch (error) {
       console.error('Erreur:', error);
@@ -60,6 +64,15 @@ function TaskDetail() {
     try {
       const response = await meetingService.getAll();
       setMeetings(response.data);
+    } catch (error) {
+      console.error('Erreur:', error);
+    }
+  };
+
+  const loadTeams = async () => {
+    try {
+      const response = await teamService.getAll();
+      setTeams(response.data);
     } catch (error) {
       console.error('Erreur:', error);
     }
@@ -195,6 +208,22 @@ function TaskDetail() {
               {meetings.map((meeting) => (
                 <option key={meeting.id} value={meeting.id}>
                   {meeting.title} - {new Date(meeting.date).toLocaleDateString()}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          <div className="form-group">
+            <label>Équipe</label>
+            <select
+              value={formData.teamId}
+              onChange={(e) => setFormData({ ...formData, teamId: e.target.value })}
+              required
+            >
+              <option value="">Sélectionner une équipe</option>
+              {teams.map((team) => (
+                <option key={team.id} value={team.id}>
+                  {team.name}
                 </option>
               ))}
             </select>

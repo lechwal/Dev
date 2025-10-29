@@ -120,7 +120,14 @@ function Dashboard() {
                 .map(task => (
                   <li key={task.id}>
                     <Link to={`/tasks/${task.id}`}>
-                      <strong>{task.title}</strong>
+                      <div className="task-info">
+                        <strong>{task.title}</strong>
+                        {task.assignedTo && (
+                          <span className="task-assignee">
+                            {task.assignedTo.firstName} {task.assignedTo.lastName}
+                          </span>
+                        )}
+                      </div>
                       <span className={`task-status ${task.status.toLowerCase()}`}>
                         {task.status}
                       </span>

@@ -465,6 +465,18 @@ body {
   color: var(--info);
 }
 
+.task-info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.task-assignee {
+  color: var(--text-secondary);
+  font-size: 0.85rem;
+  font-weight: 400;
+}
+
 /* Pages */
 .tasks-page,
 .meetings-page,
@@ -622,16 +634,89 @@ body {
   display: flex;
   gap: 0.5rem;
   margin-top: 1rem;
+  align-items: center;
 }
 
-.status-select {
+.btn-action-primary {
   flex: 1;
-  padding: 0.5rem;
+  padding: 0.6rem 1rem;
+  border: none;
+  border-radius: 6px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  background: linear-gradient(135deg, var(--accent-color), var(--accent-hover));
+  color: white;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 4px rgba(102, 126, 234, 0.2);
+}
+
+.btn-action-primary:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(102, 126, 234, 0.3);
+}
+
+.task-menu {
+  position: relative;
+}
+
+.btn-menu {
+  width: 36px;
+  height: 36px;
   border: 2px solid var(--border-color);
   border-radius: 6px;
-  font-size: 0.85rem;
   background-color: var(--bg-secondary);
+  color: var(--text-secondary);
+  font-size: 1.2rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.btn-menu:hover {
+  background-color: var(--bg-tertiary);
+  border-color: var(--accent-color);
   color: var(--text-primary);
+}
+
+.dropdown-menu {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  margin-top: 0.5rem;
+  background-color: var(--bg-secondary);
+  border: 2px solid var(--border-color);
+  border-radius: 8px;
+  box-shadow: 0 8px 16px var(--shadow);
+  z-index: 1000;
+  min-width: 180px;
+  overflow: hidden;
+}
+
+.dropdown-menu button {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  border: none;
+  background: none;
+  color: var(--text-primary);
+  text-align: left;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  font-size: 0.9rem;
+}
+
+.dropdown-menu button:hover {
+  background-color: var(--bg-tertiary);
+}
+
+.dropdown-menu .menu-danger {
+  color: var(--danger);
+}
+
+.dropdown-menu .menu-danger:hover {
+  background-color: rgba(239, 68, 68, 0.1);
 }
 
 /* Meetings */

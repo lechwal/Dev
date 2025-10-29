@@ -10,6 +10,7 @@ function Tasks() {
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [showForm, setShowForm] = useState(false);
+  const [activeMenu, setActiveMenu] = useState(null);
   const [formData, setFormData] = useState({
     title: '',
     description: '',
@@ -83,9 +84,19 @@ function Tasks() {
     try {
       await taskService.update(id, { status: newStatus });
       loadData();
+      setActiveMenu(null);
     } catch (error) {
       alert(error.response?.data?.error || 'Erreur lors de la mise à jour');
     }
+  };
+
+  const getNextStatus = (currentStatus) => {
+    const statusFlow = {
+      'TODO': { next: 'IN_PROGRESS', label: 'Commencer', icon: '▶️' },
+      'IN_PROGRESS': { next: 'DONE', label: 'Terminer', icon: '✓' },
+      'DONE': null
+    };
+    return statusFlow[currentStatus];
   };
 
   if (loading) return <div className="loading">Chargement...</div>;
@@ -210,21 +221,44 @@ function Tasks() {
                   )}
                 </Link>
                 <div className="task-actions">
-                  {status !== 'DONE' && (
-                    <select
-                      value={status}
-                      onChange={(e) => handleStatusChange(task.id, e.target.value)}
-                      className="status-select"
+                  {getNextStatus(status) && (
+                    <button
+                      onClick={() => handleStatusChange(task.id, getNextStatus(status).next)}
+                      className="btn-action-primary"
+                      title={getNextStatus(status).label}
                     >
-                      <option value="TODO">À faire</option>
-                      <option value="IN_PROGRESS">En cours</option>
-                      <option value="DONE">Terminée</option>
-                      <option value="CANCELLED">Annulée</option>
-                    </select>
+                      {getNextStatus(status).label}
+                    </button>
                   )}
-                  <button onClick={() => handleDelete(task.id)} className="btn-danger">
-                    Supprimer
-                  </button>
+                  <div className="task-menu">
+                    <button
+                      onClick={() => setActiveMenu(activeMenu === task.id ? null : task.id)}
+                      className="btn-menu"
+                      title="Plus d'actions"
+                    >
+                      ⋮
+                    </button>
+                    {activeMenu === task.id && (
+                      <div className="dropdown-menu">
+                        {status !== 'TODO' && (
+                          <button onClick={() => handleStatusChange(task.id, 'TODO')}>
+                            Remettre à faire
+                          </button>
+                        )}
+                        {status !== 'CANCELLED' && (
+                          <button onClick={() => handleStatusChange(task.id, 'CANCELLED')}>
+                            Annuler
+                          </button>
+                        )}
+                        <button
+                          onClick={() => handleDelete(task.id)}
+                          className="menu-danger"
+                        >
+                          Supprimer
+                        </button>
+                      </div>
+                    )}
+                  </div>
                 </div>
               </div>
             ))}

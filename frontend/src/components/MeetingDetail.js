@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
-import { meetingService, userService, taskService, decisionService } from '../services/api';
+import { meetingService, userService, taskService, decisionService, teamService } from '../services/api';
 import api from '../services/api';
 
 function MeetingDetail() {
@@ -8,6 +8,7 @@ function MeetingDetail() {
   const navigate = useNavigate();
   const [meeting, setMeeting] = useState(null);
   const [users, setUsers] = useState([]);
+  const [teams, setTeams] = useState([]);
   const [loading, setLoading] = useState(true);
   const [editing, setEditing] = useState(false);
   const [activeTab, setActiveTab] = useState('info');
@@ -16,7 +17,8 @@ function MeetingDetail() {
     title: '',
     description: '',
     date: '',
-    notes: ''
+    notes: '',
+    teamId: ''
   });
 
   // État pour les participants
@@ -52,6 +54,7 @@ function MeetingDetail() {
   useEffect(() => {
     loadMeeting();
     loadUsers();
+    loadTeams();
   }, [id]);
 
   const loadMeeting = async () => {
@@ -62,7 +65,8 @@ function MeetingDetail() {
         title: response.data.title,
         description: response.data.description || '',
         date: response.data.date ? response.data.date.split('T')[0] : '',
-        notes: response.data.notes || ''
+        notes: response.data.notes || '',
+        teamId: response.data.teamId || ''
       });
     } catch (error) {
       console.error('Erreur:', error);
@@ -76,6 +80,15 @@ function MeetingDetail() {
     try {
       const response = await userService.getAll();
       setUsers(response.data);
+    } catch (error) {
+      console.error('Erreur:', error);
+    }
+  };
+
+  const loadTeams = async () => {
+    try {
+      const response = await teamService.getAll();
+      setTeams(response.data);
     } catch (error) {
       console.error('Erreur:', error);
     }
@@ -270,6 +283,22 @@ function MeetingDetail() {
               rows="8"
               placeholder="Notes prises pendant la réunion..."
             />
+          </div>
+
+          <div className="form-group">
+            <label>Équipe</label>
+            <select
+              value={formData.teamId}
+              onChange={(e) => setFormData({ ...formData, teamId: e.target.value })}
+              required
+            >
+              <option value="">Sélectionner une équipe</option>
+              {teams.map((team) => (
+                <option key={team.id} value={team.id}>
+                  {team.name}
+                </option>
+              ))}
+            </select>
           </div>
 
           <div className="form-actions">
