@@ -5,8 +5,11 @@ import { ThemeProvider } from './contexts/ThemeContext';
 import Login from './components/Login';
 import Dashboard from './components/Dashboard';
 import Tasks from './components/Tasks';
+import TaskDetail from './components/TaskDetail';
 import Meetings from './components/Meetings';
+import MeetingDetail from './components/MeetingDetail';
 import Decisions from './components/Decisions';
+import DecisionDetail from './components/DecisionDetail';
 import Admin from './components/Admin';
 import Navbar from './components/Navbar';
 import './App.css';
@@ -49,6 +52,14 @@ function AppRoutes() {
           }
         />
         <Route
+          path="/tasks/:id"
+          element={
+            <PrivateRoute>
+              <TaskDetail />
+            </PrivateRoute>
+          }
+        />
+        <Route
           path="/meetings"
           element={
             <PrivateRoute>
@@ -57,10 +68,26 @@ function AppRoutes() {
           }
         />
         <Route
+          path="/meetings/:id"
+          element={
+            <PrivateRoute>
+              <MeetingDetail />
+            </PrivateRoute>
+          }
+        />
+        <Route
           path="/decisions"
           element={
             <PrivateRoute>
               <Decisions />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/decisions/:id"
+          element={
+            <PrivateRoute>
+              <DecisionDetail />
             </PrivateRoute>
           }
         />

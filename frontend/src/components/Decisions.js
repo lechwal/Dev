@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import { decisionService, meetingService, teamService } from '../services/api';
 import { useAuth } from '../contexts/AuthContext';
 
@@ -156,25 +157,27 @@ function Decisions() {
         ) : (
           decisions.map(decision => (
             <div key={decision.id} className="decision-card">
-              <div className="decision-header">
-                <h3>{decision.title}</h3>
-                <span className="decision-date">
-                  {new Date(decision.date).toLocaleDateString('fr-FR')}
-                </span>
-              </div>
-              {decision.description && (
-                <p className="decision-description">{decision.description}</p>
-              )}
-              <div className="decision-meta">
-                {decision.team && (
-                  <span className="decision-team">{decision.team.name}</span>
-                )}
-                {decision.meeting && (
-                  <span className="decision-meeting">
-                    Réunion: {decision.meeting.title}
+              <Link to={`/decisions/${decision.id}`} className="card-link">
+                <div className="decision-header">
+                  <h3>{decision.title}</h3>
+                  <span className="decision-date">
+                    {new Date(decision.date).toLocaleDateString('fr-FR')}
                   </span>
+                </div>
+                {decision.description && (
+                  <p className="decision-description">{decision.description}</p>
                 )}
-              </div>
+                <div className="decision-meta">
+                  {decision.team && (
+                    <span className="decision-team" style={{ backgroundColor: decision.team.color }}>{decision.team.name}</span>
+                  )}
+                  {decision.meeting && (
+                    <span className="decision-meeting">
+                      Réunion: {decision.meeting.title}
+                    </span>
+                  )}
+                </div>
+              </Link>
               <div className="decision-actions">
                 <button onClick={() => handleDelete(decision.id)} className="btn-danger">
                   Supprimer

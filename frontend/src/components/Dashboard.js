@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { taskService, meetingService, decisionService } from '../services/api';
 
@@ -57,25 +58,25 @@ function Dashboard() {
       </div>
 
       <div className="stats-grid">
-        <div className="stat-card">
+        <Link to="/tasks" className="stat-card">
           <h3>Tâches à faire</h3>
           <div className="stat-number">{todoTasks.length}</div>
-        </div>
+        </Link>
 
-        <div className="stat-card">
+        <Link to="/tasks" className="stat-card">
           <h3>Tâches en cours</h3>
           <div className="stat-number">{inProgressTasks.length}</div>
-        </div>
+        </Link>
 
-        <div className="stat-card">
+        <Link to="/meetings" className="stat-card">
           <h3>Réunions</h3>
           <div className="stat-number">{stats.meetings.length}</div>
-        </div>
+        </Link>
 
-        <div className="stat-card">
+        <Link to="/decisions" className="stat-card">
           <h3>Décisions</h3>
           <div className="stat-number">{stats.decisions.length}</div>
-        </div>
+        </Link>
       </div>
 
       <div className="dashboard-content">
@@ -87,10 +88,12 @@ function Dashboard() {
             <ul className="meeting-list">
               {upcomingMeetings.map(meeting => (
                 <li key={meeting.id}>
-                  <strong>{meeting.title}</strong>
-                  <span className="meeting-date">
-                    {new Date(meeting.date).toLocaleDateString('fr-FR')}
-                  </span>
+                  <Link to={`/meetings/${meeting.id}`}>
+                    <strong>{meeting.title}</strong>
+                    <span className="meeting-date">
+                      {new Date(meeting.date).toLocaleDateString('fr-FR')}
+                    </span>
+                  </Link>
                 </li>
               ))}
             </ul>
@@ -108,10 +111,12 @@ function Dashboard() {
                 .slice(0, 5)
                 .map(task => (
                   <li key={task.id}>
-                    <strong>{task.title}</strong>
-                    <span className={`task-status ${task.status.toLowerCase()}`}>
-                      {task.status}
-                    </span>
+                    <Link to={`/tasks/${task.id}`}>
+                      <strong>{task.title}</strong>
+                      <span className={`task-status ${task.status.toLowerCase()}`}>
+                        {task.status}
+                      </span>
+                    </Link>
                   </li>
                 ))}
             </ul>

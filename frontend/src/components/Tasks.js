@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import { taskService, teamService } from '../services/api';
 import { useAuth } from '../contexts/AuthContext';
 
@@ -163,17 +164,19 @@ function Tasks() {
             </h2>
             {tasks.filter(t => t.status === status).map(task => (
               <div key={task.id} className={`task-card priority-${task.priority.toLowerCase()}`}>
-                <h3>{task.title}</h3>
-                {task.description && <p>{task.description}</p>}
-                <div className="task-meta">
-                  <span className="task-priority">{task.priority}</span>
-                  {task.team && <span className="task-team">{task.team.name}</span>}
-                </div>
-                {task.dueDate && (
-                  <div className="task-date">
-                    Échéance: {new Date(task.dueDate).toLocaleDateString('fr-FR')}
+                <Link to={`/tasks/${task.id}`} className="card-link">
+                  <h3>{task.title}</h3>
+                  {task.description && <p>{task.description}</p>}
+                  <div className="task-meta">
+                    <span className="task-priority">{task.priority}</span>
+                    {task.team && <span className="task-team" style={{ backgroundColor: task.team.color }}>{task.team.name}</span>}
                   </div>
-                )}
+                  {task.dueDate && (
+                    <div className="task-date">
+                      Échéance: {new Date(task.dueDate).toLocaleDateString('fr-FR')}
+                    </div>
+                  )}
+                </Link>
                 <div className="task-actions">
                   {status !== 'DONE' && (
                     <select

@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import { meetingService, teamService } from '../services/api';
 import { useAuth } from '../contexts/AuthContext';
 
@@ -137,15 +138,17 @@ function Meetings() {
           ) : (
             upcomingMeetings.map(meeting => (
               <div key={meeting.id} className="meeting-card upcoming">
-                <div className="meeting-header">
-                  <h3>{meeting.title}</h3>
-                  <span className="meeting-date">
-                    {new Date(meeting.date).toLocaleString('fr-FR')}
-                  </span>
-                </div>
-                {meeting.description && <p>{meeting.description}</p>}
+                <Link to={`/meetings/${meeting.id}`} className="card-link">
+                  <div className="meeting-header">
+                    <h3>{meeting.title}</h3>
+                    <span className="meeting-date">
+                      {new Date(meeting.date).toLocaleString('fr-FR')}
+                    </span>
+                  </div>
+                  {meeting.description && <p>{meeting.description}</p>}
+                  {meeting.team && <span className="meeting-team" style={{ backgroundColor: meeting.team.color }}>{meeting.team.name}</span>}
+                </Link>
                 <div className="meeting-footer">
-                  {meeting.team && <span className="meeting-team">{meeting.team.name}</span>}
                   <button onClick={() => handleDelete(meeting.id)} className="btn-danger">
                     Supprimer
                   </button>
@@ -164,16 +167,16 @@ function Meetings() {
           ) : (
             pastMeetings.map(meeting => (
               <div key={meeting.id} className="meeting-card past">
-                <div className="meeting-header">
-                  <h3>{meeting.title}</h3>
-                  <span className="meeting-date">
-                    {new Date(meeting.date).toLocaleString('fr-FR')}
-                  </span>
-                </div>
-                {meeting.description && <p>{meeting.description}</p>}
-                <div className="meeting-footer">
-                  {meeting.team && <span className="meeting-team">{meeting.team.name}</span>}
-                </div>
+                <Link to={`/meetings/${meeting.id}`} className="card-link">
+                  <div className="meeting-header">
+                    <h3>{meeting.title}</h3>
+                    <span className="meeting-date">
+                      {new Date(meeting.date).toLocaleString('fr-FR')}
+                    </span>
+                  </div>
+                  {meeting.description && <p>{meeting.description}</p>}
+                  {meeting.team && <span className="meeting-team" style={{ backgroundColor: meeting.team.color }}>{meeting.team.name}</span>}
+                </Link>
               </div>
             ))
           )}
