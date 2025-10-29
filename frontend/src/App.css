@@ -1315,7 +1315,8 @@ body {
 }
 
 /* Improved Date Picker Contrast */
-input[type="date"] {
+input[type="date"],
+input[type="datetime-local"] {
   padding: 0.75rem;
   border: 2px solid var(--border-color);
   border-radius: 6px;
@@ -1323,26 +1324,37 @@ input[type="date"] {
   color: var(--text-primary);
   font-size: 1rem;
   font-weight: 600;
+  color-scheme: light;
 }
 
-input[type="date"]::-webkit-calendar-picker-indicator {
+input[type="date"]::-webkit-calendar-picker-indicator,
+input[type="datetime-local"]::-webkit-calendar-picker-indicator {
   cursor: pointer;
-  opacity: 0.8;
-}
-
-input[type="date"]::-webkit-calendar-picker-indicator:hover {
   opacity: 1;
+  filter: brightness(0) saturate(100%) invert(46%) sepia(94%) saturate(3000%) hue-rotate(230deg) brightness(95%) contrast(95%);
 }
 
-input[type="date"]:focus {
+input[type="date"]::-webkit-calendar-picker-indicator:hover,
+input[type="datetime-local"]::-webkit-calendar-picker-indicator:hover {
+  filter: brightness(0) saturate(100%) invert(46%) sepia(94%) saturate(3000%) hue-rotate(230deg) brightness(105%) contrast(105%);
+}
+
+input[type="date"]:focus,
+input[type="datetime-local"]:focus {
   outline: none;
   border-color: var(--accent-color);
   box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
 }
 
 /* Dark mode improvements for date picker */
-[data-theme="dark"] input[type="date"]::-webkit-calendar-picker-indicator {
-  filter: invert(1);
+[data-theme="dark"] input[type="date"],
+[data-theme="dark"] input[type="datetime-local"] {
+  color-scheme: dark;
+}
+
+[data-theme="dark"] input[type="date"]::-webkit-calendar-picker-indicator,
+[data-theme="dark"] input[type="datetime-local"]::-webkit-calendar-picker-indicator {
+  filter: brightness(0) saturate(100%) invert(46%) sepia(94%) saturate(3000%) hue-rotate(230deg) brightness(120%) contrast(110%);
 }
 
 /* Team Color Badges */

@@ -14,6 +14,14 @@ function Dashboard() {
 
   useEffect(() => {
     loadDashboardData();
+
+    // Recharger les données toutes les 30 secondes
+    const interval = setInterval(() => {
+      loadDashboardData();
+    }, 30000);
+
+    // Nettoyer l'interval lors du démontage
+    return () => clearInterval(interval);
   }, []);
 
   const loadDashboardData = async () => {

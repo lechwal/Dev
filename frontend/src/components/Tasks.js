@@ -7,6 +7,7 @@ function Tasks() {
   const { user, isDirection } = useAuth();
   const [tasks, setTasks] = useState([]);
   const [teams, setTeams] = useState([]);
+  const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [showForm, setShowForm] = useState(false);
   const [formData, setFormData] = useState({
@@ -25,12 +26,14 @@ function Tasks() {
 
   const loadData = async () => {
     try {
-      const [tasksRes, teamsRes] = await Promise.all([
+      const [tasksRes, teamsRes, usersRes] = await Promise.all([
         taskService.getAll(),
-        teamService.getAll()
+        teamService.getAll(),
+        import('../services/api').then(m => m.userService.getAll())
       ]);
       setTasks(tasksRes.data);
       setTeams(teamsRes.data);
+      setUsers(usersRes.data);
     } catch (error) {
       console.error('Erreur:', error);
     } finally {
@@ -135,22 +138,37 @@ function Tasks() {
               />
             </div>
 
-            {isDirection() && (
-              <div className="form-group">
-                <label>Équipe</label>
-                <select
-                  value={formData.teamId}
-                  onChange={(e) => setFormData({...formData, teamId: e.target.value})}
-                  required
-                >
-                  <option value="">Sélectionner une équipe</option>
-                  {teams.map(team => (
-                    <option key={team.id} value={team.id}>{team.name}</option>
-                  ))}
-                </select>
-              </div>
-            )}
+            <div className="form-group">
+              <label>Assigner à</label>
+              <select
+                value={formData.assignedToId}
+                onChange={(e) => setFormData({...formData, assignedToId: e.target.value})}
+              >
+                <option value="">Non assignée</option>
+                {users.map(user => (
+                  <option key={user.id} value={user.id}>
+                    {user.firstName} {user.lastName}
+                  </option>
+                ))}
+              </select>
+            </div>
           </div>
+
+          {isDirection() && (
+            <div className="form-group">
+              <label>Équipe</label>
+              <select
+                value={formData.teamId}
+                onChange={(e) => setFormData({...formData, teamId: e.target.value})}
+                required
+              >
+                <option value="">Sélectionner une équipe</option>
+                {teams.map(team => (
+                  <option key={team.id} value={team.id}>{team.name}</option>
+                ))}
+              </select>
+            </div>
+          )}
 
           <button type="submit" className="btn-primary">Créer la tâche</button>
         </form>
