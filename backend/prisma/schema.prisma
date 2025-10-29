@@ -13,17 +13,18 @@ datasource db {
 // Les valeurs possibles sont gérées au niveau de l'application
 
 model User {
-  id        Int      @id @default(autoincrement())
-  email     String   @unique
-  password  String
-  firstName String
-  lastName  String
-  role      String   @default("MEMBRE")  // MEMBRE ou DIRECTION
-  teamId    Int?
-  team      Team?    @relation(fields: [teamId], references: [id])
-  assignedTasks Task[]
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id               Int                  @id @default(autoincrement())
+  email            String               @unique
+  password         String
+  firstName        String
+  lastName         String
+  role             String               @default("MEMBRE")  // MEMBRE ou DIRECTION
+  teamId           Int?
+  team             Team?                @relation(fields: [teamId], references: [id])
+  assignedTasks    Task[]
+  meetingParticipations MeetingParticipant[]
+  createdAt        DateTime             @default(now())
+  updatedAt        DateTime             @updatedAt
 
   @@map("users")
 }
@@ -32,6 +33,7 @@ model Team {
   id          Int        @id @default(autoincrement())
   name        String     @unique
   description String?
+  color       String     @default("#667eea")  // Couleur hex pour identifier l'équipe
   members     User[]
   meetings    Meeting[]
   tasks       Task[]
@@ -43,17 +45,47 @@ model Team {
 }
 
 model Meeting {
-  id          Int        @id @default(autoincrement())
+  id          Int                  @id @default(autoincrement())
   title       String
   description String?
   date        DateTime
+  notes       String?              // Prise de notes pendant la réunion
   teamId      Int
-  team        Team       @relation(fields: [teamId], references: [id], onDelete: Cascade)
+  team        Team                 @relation(fields: [teamId], references: [id], onDelete: Cascade)
   decisions   Decision[]
-  createdAt   DateTime   @default(now())
-  updatedAt   DateTime   @updatedAt
+  tasks       Task[]               // Tâches créées lors de cette réunion
+  participants MeetingParticipant[]
+  agendaItems AgendaItem[]         // Points à l'ordre du jour
+  createdAt   DateTime             @default(now())
+  updatedAt   DateTime             @updatedAt
 
   @@map("meetings")
+}
+
+model MeetingParticipant {
+  id        Int      @id @default(autoincrement())
+  meetingId Int
+  meeting   Meeting  @relation(fields: [meetingId], references: [id], onDelete: Cascade)
+  userId    Int
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+
+  @@unique([meetingId, userId])
+  @@map("meeting_participants")
+}
+
+model AgendaItem {
+  id          Int      @id @default(autoincrement())
+  meetingId   Int
+  meeting     Meeting  @relation(fields: [meetingId], references: [id], onDelete: Cascade)
+  title       String
+  description String?
+  order       Int      @default(0)  // Ordre d'affichage
+  completed   Boolean  @default(false)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@map("agenda_items")
 }
 
 model Task {
@@ -67,6 +99,8 @@ model Task {
   team        Team      @relation(fields: [teamId], references: [id], onDelete: Cascade)
   assignedToId Int?
   assignedTo  User?     @relation(fields: [assignedToId], references: [id])
+  meetingId   Int?      // Tâche créée lors d'une réunion
+  meeting     Meeting?  @relation(fields: [meetingId], references: [id])
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
 
