@@ -18,22 +18,10 @@ const getAllMeetings = async (req, res) => {
             color: true
           }
         },
-        participants: {
-          include: {
-            user: {
-              select: {
-                id: true,
-                name: true,
-                email: true
-              }
-            }
-          }
-        },
         _count: {
           select: {
             decisions: true,
-            tasks: true,
-            agendaItems: true
+            tasks: true
           }
         }
       },
@@ -64,43 +52,18 @@ const getMeetingById = async (req, res) => {
             color: true
           }
         },
-        participants: {
-          include: {
-            user: {
-              select: {
-                id: true,
-                name: true,
-                email: true,
-                role: true
-              }
-            }
-          }
-        },
-        agendaItems: {
-          orderBy: {
-            order: 'asc'
-          }
-        },
         tasks: {
           include: {
-            assignee: {
+            assignedTo: {
               select: {
                 id: true,
-                name: true
+                firstName: true,
+                lastName: true
               }
             }
           }
         },
-        decisions: {
-          include: {
-            createdBy: {
-              select: {
-                id: true,
-                name: true
-              }
-            }
-          }
-        }
+        decisions: true
       }
     });
 
@@ -191,22 +154,6 @@ const updateMeeting = async (req, res) => {
             id: true,
             name: true,
             color: true
-          }
-        },
-        participants: {
-          include: {
-            user: {
-              select: {
-                id: true,
-                name: true,
-                email: true
-              }
-            }
-          }
-        },
-        agendaItems: {
-          orderBy: {
-            order: 'asc'
           }
         }
       }

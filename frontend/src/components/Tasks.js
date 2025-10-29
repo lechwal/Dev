@@ -41,8 +41,6 @@ function Tasks() {
       setTasks(tasksRes.data);
       setTeams(teamsRes.data);
       setUsers(usersRes.data);
-      console.log('Équipes chargées (Tasks):', teamsRes.data); // Debug
-      console.log('Utilisateurs chargés:', usersRes.data); // Debug
     } catch (error) {
       console.error('Erreur lors du chargement:', error);
     } finally {

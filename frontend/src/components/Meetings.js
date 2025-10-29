@@ -29,26 +29,14 @@ function Meetings() {
 
   const loadData = async () => {
     try {
-      console.log('🔄 Début chargement des données...');
       const [meetingsRes, teamsRes] = await Promise.all([
         meetingService.getAll(),
         teamService.getAll()
       ]);
-      console.log('📦 Réponse teams brute:', teamsRes);
-      console.log('📋 Teams data:', teamsRes.data);
-      console.log('🔢 Nombre d\'équipes:', teamsRes.data?.length);
-      console.log('✅ Type:', Array.isArray(teamsRes.data) ? 'Array' : typeof teamsRes.data);
-
       setMeetings(meetingsRes.data);
       setTeams(teamsRes.data);
-
-      // Vérifier après le setState
-      setTimeout(() => {
-        console.log('🎯 État teams après setState - vérification');
-      }, 100);
     } catch (error) {
-      console.error('❌ Erreur lors du chargement:', error);
-      console.error('❌ Détails:', error.response?.data);
+      console.error('Erreur lors du chargement:', error);
     } finally {
       setLoading(false);
     }
@@ -130,13 +118,6 @@ function Meetings() {
 
             <div className="form-group">
               <label>Équipe</label>
-              {(() => {
-                console.log('🎨 RENDER - isDirection():', isDirection());
-                console.log('🎨 RENDER - teams:', teams);
-                console.log('🎨 RENDER - teams.length:', teams?.length);
-                console.log('🎨 RENDER - user:', user);
-                return null;
-              })()}
               {isDirection() ? (
                 <select
                   value={formData.teamId}
@@ -144,10 +125,9 @@ function Meetings() {
                   required
                 >
                   <option value="">Sélectionner une équipe</option>
-                  {teams.map(team => {
-                    console.log('🔄 Mapping team:', team);
-                    return <option key={team.id} value={team.id}>{team.name}</option>;
-                  })}
+                  {teams.map(team => (
+                    <option key={team.id} value={team.id}>{team.name}</option>
+                  ))}
                 </select>
               ) : (
                 <input

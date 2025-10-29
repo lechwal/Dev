@@ -39,7 +39,6 @@ function Decisions() {
       setDecisions(decisionsRes.data);
       setMeetings(meetingsRes.data);
       setTeams(teamsRes.data);
-      console.log('Équipes chargées (Decisions):', teamsRes.data); // Debug
     } catch (error) {
       console.error('Erreur lors du chargement:', error);
     } finally {
