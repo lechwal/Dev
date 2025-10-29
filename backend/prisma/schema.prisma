@@ -38,6 +38,9 @@ model Team {
   meetings    Meeting[]
   tasks       Task[]
   decisions   Decision[]
+  meetingTeams MeetingTeam[]
+  taskTeams    TaskTeam[]
+  decisionTeams DecisionTeam[]
   createdAt   DateTime   @default(now())
   updatedAt   DateTime   @updatedAt
 
@@ -52,6 +55,7 @@ model Meeting {
   notes       String?              // Prise de notes pendant la réunion
   teamId      Int
   team        Team                 @relation(fields: [teamId], references: [id], onDelete: Cascade)
+  teams       MeetingTeam[]        // Équipes supplémentaires (many-to-many)
   decisions   Decision[]
   tasks       Task[]               // Tâches créées lors de cette réunion
   participants MeetingParticipant[]
@@ -97,6 +101,7 @@ model Task {
   dueDate     DateTime?
   teamId      Int
   team        Team      @relation(fields: [teamId], references: [id], onDelete: Cascade)
+  teams       TaskTeam[]  // Équipes supplémentaires (many-to-many)
   assignedToId Int?
   assignedTo  User?     @relation(fields: [assignedToId], references: [id])
   meetingId   Int?      // Tâche créée lors d'une réunion
@@ -114,10 +119,49 @@ model Decision {
   date        DateTime @default(now())
   teamId      Int
   team        Team     @relation(fields: [teamId], references: [id], onDelete: Cascade)
+  teams       DecisionTeam[]  // Équipes supplémentaires (many-to-many)
   meetingId   Int?
   meeting     Meeting? @relation(fields: [meetingId], references: [id])
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
   @@map("decisions")
+}
+
+// Tables de jonction pour les relations many-to-many
+
+model MeetingTeam {
+  id        Int      @id @default(autoincrement())
+  meetingId Int
+  meeting   Meeting  @relation(fields: [meetingId], references: [id], onDelete: Cascade)
+  teamId    Int
+  team      Team     @relation(fields: [teamId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+
+  @@unique([meetingId, teamId])
+  @@map("meeting_teams")
+}
+
+model TaskTeam {
+  id        Int      @id @default(autoincrement())
+  taskId    Int
+  task      Task     @relation(fields: [taskId], references: [id], onDelete: Cascade)
+  teamId    Int
+  team      Team     @relation(fields: [teamId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+
+  @@unique([taskId, teamId])
+  @@map("task_teams")
+}
+
+model DecisionTeam {
+  id         Int      @id @default(autoincrement())
+  decisionId Int
+  decision   Decision @relation(fields: [decisionId], references: [id], onDelete: Cascade)
+  teamId     Int
+  team       Team     @relation(fields: [teamId], references: [id], onDelete: Cascade)
+  createdAt  DateTime @default(now())
+
+  @@unique([decisionId, teamId])
+  @@map("decision_teams")
 }
