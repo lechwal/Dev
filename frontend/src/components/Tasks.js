@@ -24,6 +24,13 @@ function Tasks() {
     loadData();
   }, []);
 
+  // Initialiser teamId quand user est chargé
+  useEffect(() => {
+    if (user && !isDirection() && user.teamId) {
+      setFormData(prev => ({ ...prev, teamId: user.teamId }));
+    }
+  }, [user, isDirection]);
+
   const loadData = async () => {
     try {
       const [tasksRes, teamsRes, usersRes] = await Promise.all([
@@ -34,8 +41,10 @@ function Tasks() {
       setTasks(tasksRes.data);
       setTeams(teamsRes.data);
       setUsers(usersRes.data);
+      console.log('Équipes chargées (Tasks):', teamsRes.data); // Debug
+      console.log('Utilisateurs chargés:', usersRes.data); // Debug
     } catch (error) {
-      console.error('Erreur:', error);
+      console.error('Erreur lors du chargement:', error);
     } finally {
       setLoading(false);
     }
@@ -154,9 +163,9 @@ function Tasks() {
             </div>
           </div>
 
-          {isDirection() && (
-            <div className="form-group">
-              <label>Équipe</label>
+          <div className="form-group">
+            <label>Équipe</label>
+            {isDirection() ? (
               <select
                 value={formData.teamId}
                 onChange={(e) => setFormData({...formData, teamId: e.target.value})}
@@ -167,8 +176,15 @@ function Tasks() {
                   <option key={team.id} value={team.id}>{team.name}</option>
                 ))}
               </select>
-            </div>
-          )}
+            ) : (
+              <input
+                type="text"
+                value={user?.team?.name || 'Aucune équipe'}
+                disabled
+                style={{ backgroundColor: 'var(--bg-secondary)', cursor: 'not-allowed' }}
+              />
+            )}
+          </div>
 
           <button type="submit" className="btn-primary">Créer la tâche</button>
         </form>
