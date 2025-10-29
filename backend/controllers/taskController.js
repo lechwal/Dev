@@ -14,7 +14,8 @@ const getAllTasks = async (req, res) => {
         team: {
           select: {
             id: true,
-            name: true
+            name: true,
+            color: true
           }
         },
         assignedTo: {
@@ -23,6 +24,13 @@ const getAllTasks = async (req, res) => {
             firstName: true,
             lastName: true,
             email: true
+          }
+        },
+        meeting: {
+          select: {
+            id: true,
+            title: true,
+            date: true
           }
         }
       },
@@ -49,7 +57,8 @@ const getTaskById = async (req, res) => {
         team: {
           select: {
             id: true,
-            name: true
+            name: true,
+            color: true
           }
         },
         assignedTo: {
@@ -58,6 +67,13 @@ const getTaskById = async (req, res) => {
             firstName: true,
             lastName: true,
             email: true
+          }
+        },
+        meeting: {
+          select: {
+            id: true,
+            title: true,
+            date: true
           }
         }
       }
@@ -82,7 +98,7 @@ const getTaskById = async (req, res) => {
 // Créer une nouvelle tâche
 const createTask = async (req, res) => {
   try {
-    const { title, description, status, priority, dueDate, teamId, assignedToId } = req.body;
+    const { title, description, status, priority, dueDate, teamId, assignedToId, meetingId } = req.body;
     const targetTeamId = parseInt(teamId);
 
     // Vérifier que l'utilisateur peut créer une tâche pour cette équipe
@@ -101,6 +117,17 @@ const createTask = async (req, res) => {
       }
     }
 
+    // Si une réunion est spécifiée, vérifier qu'elle appartient à la même équipe
+    if (meetingId) {
+      const meeting = await prisma.meeting.findUnique({
+        where: { id: parseInt(meetingId) }
+      });
+
+      if (!meeting || (req.teamFilter && meeting.teamId !== targetTeamId)) {
+        return res.status(400).json({ error: 'La réunion doit appartenir à la même équipe' });
+      }
+    }
+
     const task = await prisma.task.create({
       data: {
         title,
@@ -109,13 +136,15 @@ const createTask = async (req, res) => {
         priority: priority || 'MEDIUM',
         dueDate: dueDate ? new Date(dueDate) : null,
         teamId: targetTeamId,
-        assignedToId: assignedToId ? parseInt(assignedToId) : null
+        assignedToId: assignedToId ? parseInt(assignedToId) : null,
+        meetingId: meetingId ? parseInt(meetingId) : null
       },
       include: {
         team: {
           select: {
             id: true,
-            name: true
+            name: true,
+            color: true
           }
         },
         assignedTo: {
@@ -124,6 +153,13 @@ const createTask = async (req, res) => {
             firstName: true,
             lastName: true,
             email: true
+          }
+        },
+        meeting: {
+          select: {
+            id: true,
+            title: true,
+            date: true
           }
         }
       }
@@ -140,7 +176,7 @@ const createTask = async (req, res) => {
 const updateTask = async (req, res) => {
   try {
     const { id } = req.params;
-    const { title, description, status, priority, dueDate, assignedToId } = req.body;
+    const { title, description, status, priority, dueDate, assignedToId, meetingId } = req.body;
 
     // Vérifier que la tâche existe et l'accès
     const existingTask = await prisma.task.findUnique({
@@ -166,21 +202,35 @@ const updateTask = async (req, res) => {
       }
     }
 
+    // Si une réunion est spécifiée, vérifier qu'elle appartient à la même équipe
+    if (meetingId) {
+      const meeting = await prisma.meeting.findUnique({
+        where: { id: parseInt(meetingId) }
+      });
+
+      if (!meeting || (req.teamFilter && meeting.teamId !== existingTask.teamId)) {
+        return res.status(400).json({ error: 'La réunion doit appartenir à la même équipe' });
+      }
+    }
+
+    const updateData = {};
+    if (title !== undefined) updateData.title = title;
+    if (description !== undefined) updateData.description = description;
+    if (status !== undefined) updateData.status = status;
+    if (priority !== undefined) updateData.priority = priority;
+    if (dueDate !== undefined) updateData.dueDate = dueDate ? new Date(dueDate) : null;
+    if (assignedToId !== undefined) updateData.assignedToId = assignedToId ? parseInt(assignedToId) : null;
+    if (meetingId !== undefined) updateData.meetingId = meetingId ? parseInt(meetingId) : null;
+
     const task = await prisma.task.update({
       where: { id: parseInt(id) },
-      data: {
-        title,
-        description,
-        status,
-        priority,
-        dueDate: dueDate ? new Date(dueDate) : undefined,
-        assignedToId: assignedToId !== undefined ? (assignedToId ? parseInt(assignedToId) : null) : undefined
-      },
+      data: updateData,
       include: {
         team: {
           select: {
             id: true,
-            name: true
+            name: true,
+            color: true
           }
         },
         assignedTo: {
@@ -189,6 +239,13 @@ const updateTask = async (req, res) => {
             firstName: true,
             lastName: true,
             email: true
+          }
+        },
+        meeting: {
+          select: {
+            id: true,
+            title: true,
+            date: true
           }
         }
       }

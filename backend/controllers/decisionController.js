@@ -14,7 +14,8 @@ const getAllDecisions = async (req, res) => {
         team: {
           select: {
             id: true,
-            name: true
+            name: true,
+            color: true
           }
         },
         meeting: {
@@ -48,7 +49,8 @@ const getDecisionById = async (req, res) => {
         team: {
           select: {
             id: true,
-            name: true
+            name: true,
+            color: true
           }
         },
         meeting: {
@@ -111,7 +113,8 @@ const createDecision = async (req, res) => {
         team: {
           select: {
             id: true,
-            name: true
+            name: true,
+            color: true
           }
         },
         meeting: {
@@ -135,7 +138,7 @@ const createDecision = async (req, res) => {
 const updateDecision = async (req, res) => {
   try {
     const { id } = req.params;
-    const { title, description, date } = req.body;
+    const { title, description, date, meetingId } = req.body;
 
     // Vérifier que la décision existe et l'accès
     const existingDecision = await prisma.decision.findUnique({
@@ -150,18 +153,32 @@ const updateDecision = async (req, res) => {
       return res.status(403).json({ error: 'Accès non autorisé à cette décision' });
     }
 
+    // Si une réunion est spécifiée, vérifier qu'elle appartient à la même équipe
+    if (meetingId) {
+      const meeting = await prisma.meeting.findUnique({
+        where: { id: parseInt(meetingId) }
+      });
+
+      if (!meeting || (req.teamFilter && meeting.teamId !== existingDecision.teamId)) {
+        return res.status(400).json({ error: 'La réunion doit appartenir à la même équipe' });
+      }
+    }
+
+    const updateData = {};
+    if (title !== undefined) updateData.title = title;
+    if (description !== undefined) updateData.description = description;
+    if (date !== undefined) updateData.date = new Date(date);
+    if (meetingId !== undefined) updateData.meetingId = meetingId ? parseInt(meetingId) : null;
+
     const decision = await prisma.decision.update({
       where: { id: parseInt(id) },
-      data: {
-        title,
-        description,
-        date: date ? new Date(date) : undefined
-      },
+      data: updateData,
       include: {
         team: {
           select: {
             id: true,
-            name: true
+            name: true,
+            color: true
           }
         },
         meeting: {

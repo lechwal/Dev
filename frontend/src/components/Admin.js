@@ -24,7 +24,8 @@ function Admin() {
 
   const [teamFormData, setTeamFormData] = useState({
     name: '',
-    description: ''
+    description: '',
+    color: '#667eea'
   });
 
   useEffect(() => {
@@ -111,7 +112,7 @@ function Admin() {
       }
       setShowTeamForm(false);
       setEditingTeam(null);
-      setTeamFormData({ name: '', description: '' });
+      setTeamFormData({ name: '', description: '', color: '#667eea' });
       loadData();
     } catch (error) {
       alert(error.response?.data?.error || 'Erreur lors de l\'opération');
@@ -122,7 +123,8 @@ function Admin() {
     setEditingTeam(team);
     setTeamFormData({
       name: team.name,
-      description: team.description || ''
+      description: team.description || '',
+      color: team.color || '#667eea'
     });
     setShowTeamForm(true);
   };
@@ -343,7 +345,7 @@ function Admin() {
             <button
               onClick={() => {
                 setEditingTeam(null);
-                setTeamFormData({ name: '', description: '' });
+                setTeamFormData({ name: '', description: '', color: '#667eea' });
                 setShowTeamForm(!showTeamForm);
               }}
               className={showTeamForm ? "btn-compact btn-secondary" : "btn-compact"}
@@ -354,16 +356,35 @@ function Admin() {
 
           {showTeamForm && (
             <form onSubmit={handleTeamSubmit} className="admin-form">
-              <div className="form-group">
-                <label>Nom de l'équipe</label>
-                <input
-                  type="text"
-                  value={teamFormData.name}
-                  onChange={(e) =>
-                    setTeamFormData({ ...teamFormData, name: e.target.value })
-                  }
-                  required
-                />
+              <div className="form-row">
+                <div className="form-group">
+                  <label>Nom de l'équipe</label>
+                  <input
+                    type="text"
+                    value={teamFormData.name}
+                    onChange={(e) =>
+                      setTeamFormData({ ...teamFormData, name: e.target.value })
+                    }
+                    required
+                  />
+                </div>
+
+                <div className="form-group">
+                  <label>Couleur</label>
+                  <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
+                    <input
+                      type="color"
+                      value={teamFormData.color}
+                      onChange={(e) =>
+                        setTeamFormData({ ...teamFormData, color: e.target.value })
+                      }
+                      style={{ width: '60px', height: '40px', cursor: 'pointer' }}
+                    />
+                    <span style={{ fontSize: '14px', color: 'var(--text-secondary)' }}>
+                      {teamFormData.color}
+                    </span>
+                  </div>
+                </div>
               </div>
 
               <div className="form-group">
@@ -385,8 +406,17 @@ function Admin() {
 
           <div className="admin-grid">
             {teams.map((team) => (
-              <div key={team.id} className="team-admin-card">
-                <h3>{team.name}</h3>
+              <div key={team.id} className="team-admin-card" style={{ borderLeft: `4px solid ${team.color || '#667eea'}` }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '10px' }}>
+                  <div style={{
+                    width: '20px',
+                    height: '20px',
+                    borderRadius: '4px',
+                    backgroundColor: team.color || '#667eea',
+                    border: '2px solid var(--border-color)'
+                  }} />
+                  <h3 style={{ margin: 0 }}>{team.name}</h3>
+                </div>
                 {team.description && <p>{team.description}</p>}
                 <div className="team-stats">
                   <span>Membres: {team._count?.members || 0}</span>

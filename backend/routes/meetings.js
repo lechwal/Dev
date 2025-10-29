@@ -13,4 +13,13 @@ router.post('/', meetingController.createMeeting);
 router.put('/:id', meetingController.updateMeeting);
 router.delete('/:id', meetingController.deleteMeeting);
 
+// Gestion des participants
+router.post('/:id/participants', meetingController.addParticipant);
+router.delete('/:id/participants/:participantId', meetingController.removeParticipant);
+
+// Gestion de l'ordre du jour
+router.post('/:id/agenda', meetingController.addAgendaItem);
+router.put('/:id/agenda/:agendaId', meetingController.updateAgendaItem);
+router.delete('/:id/agenda/:agendaId', meetingController.deleteAgendaItem);
+
 module.exports = router;
