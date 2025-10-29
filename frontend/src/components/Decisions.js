@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { decisionService, meetingService, teamService } from '../services/api';
 import { useAuth } from '../contexts/AuthContext';
+import MultiSelect from './MultiSelect';
 
 function Decisions() {
   const { user, isDirection } = useAuth();
@@ -15,7 +16,8 @@ function Decisions() {
     description: '',
     date: new Date().toISOString().split('T')[0],
     teamId: user?.teamId || '',
-    meetingId: ''
+    meetingId: '',
+    additionalTeamIds: []
   });
 
   useEffect(() => {
@@ -60,7 +62,8 @@ function Decisions() {
         description: '',
         date: new Date().toISOString().split('T')[0],
         teamId: user?.teamId || '',
-        meetingId: ''
+        meetingId: '',
+        additionalTeamIds: []
       });
       loadData();
     } catch (error) {
@@ -123,7 +126,7 @@ function Decisions() {
             </div>
 
             <div className="form-group">
-              <label>Équipe</label>
+              <label>Équipe principale *</label>
               {isDirection() ? (
                 <select
                   value={formData.teamId}
@@ -145,6 +148,16 @@ function Decisions() {
               )}
             </div>
           </div>
+
+          {isDirection() && formData.teamId && (
+            <MultiSelect
+              label="Équipes supplémentaires (optionnel)"
+              options={teams.filter(t => t.id !== parseInt(formData.teamId))}
+              value={formData.additionalTeamIds}
+              onChange={(newValue) => setFormData({...formData, additionalTeamIds: newValue})}
+              placeholder="Ajouter d'autres équipes..."
+            />
+          )}
 
           <div className="form-group">
             <label>Réunion associée (optionnel)</label>

@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { taskService, teamService } from '../services/api';
 import { useAuth } from '../contexts/AuthContext';
+import MultiSelect from './MultiSelect';
 
 function Tasks() {
   const { user, isDirection } = useAuth();
@@ -18,7 +19,8 @@ function Tasks() {
     priority: 'MEDIUM',
     dueDate: '',
     teamId: user?.teamId || '',
-    assignedToId: ''
+    assignedToId: '',
+    additionalTeamIds: []
   });
 
   useEffect(() => {
@@ -61,7 +63,8 @@ function Tasks() {
         priority: 'MEDIUM',
         dueDate: '',
         teamId: user?.teamId || '',
-        assignedToId: ''
+        assignedToId: '',
+        additionalTeamIds: []
       });
       loadData();
     } catch (error) {
@@ -173,7 +176,7 @@ function Tasks() {
           </div>
 
           <div className="form-group">
-            <label>Équipe</label>
+            <label>Équipe principale *</label>
             {isDirection() ? (
               <select
                 value={formData.teamId}
@@ -194,6 +197,16 @@ function Tasks() {
               />
             )}
           </div>
+
+          {isDirection() && formData.teamId && (
+            <MultiSelect
+              label="Équipes supplémentaires (optionnel)"
+              options={teams.filter(t => t.id !== parseInt(formData.teamId))}
+              value={formData.additionalTeamIds}
+              onChange={(newValue) => setFormData({...formData, additionalTeamIds: newValue})}
+              placeholder="Ajouter d'autres équipes..."
+            />
+          )}
 
           <button type="submit" className="btn-primary">Créer la tâche</button>
         </form>

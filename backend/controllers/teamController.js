@@ -78,12 +78,13 @@ const getTeamById = async (req, res) => {
 // Créer une nouvelle équipe (réservé à la direction)
 const createTeam = async (req, res) => {
   try {
-    const { name, description } = req.body;
+    const { name, description, color } = req.body;
 
     const team = await prisma.team.create({
       data: {
         name,
-        description
+        description,
+        color: color || '#667eea'
       }
     });
 
@@ -103,14 +104,16 @@ const createTeam = async (req, res) => {
 const updateTeam = async (req, res) => {
   try {
     const { id } = req.params;
-    const { name, description } = req.body;
+    const { name, description, color } = req.body;
+
+    const updateData = {};
+    if (name !== undefined) updateData.name = name;
+    if (description !== undefined) updateData.description = description;
+    if (color !== undefined) updateData.color = color;
 
     const team = await prisma.team.update({
       where: { id: parseInt(id) },
-      data: {
-        name,
-        description
-      }
+      data: updateData
     });
 
     res.json(team);
